@@ -1,0 +1,9 @@
+# AWS properties
+aws:
+  access-key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  secret-key: YYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+  region: us-east-2
+  cognito:
+    user-pool-id: us-east-2_ME2M16jIS
+    app-client-id: XXXXXXXXXXXXXXXXXXXX
+    app-client-secret: XXXXXXXXXXXXXXXXXXXXXXXXX
