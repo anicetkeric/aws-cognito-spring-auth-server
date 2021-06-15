@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
 
@@ -16,7 +17,8 @@ public class AuthenticatedChallengeDTO {
     @NotBlank
     private String sessionId;
 
-    @NotBlank
+    @NonNull
+    @NotBlank(message = "username is mandatory")
     private String username;
 
     @NotBlank
