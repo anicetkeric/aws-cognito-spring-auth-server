@@ -1,0 +1,1 @@
+package com.authorization.sample.awscognitospringauthserver.domain;

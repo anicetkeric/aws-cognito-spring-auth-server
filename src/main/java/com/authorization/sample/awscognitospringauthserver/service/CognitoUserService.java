@@ -1,6 +1,7 @@
 package com.authorization.sample.awscognitospringauthserver.service;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
+import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
 
 import java.util.Optional;
 
@@ -14,4 +15,13 @@ public interface CognitoUserService {
      */
     Optional<AdminInitiateAuthResult> initiateAuth(String username, String password);
 
+
+    /**
+     * @param username
+     * @param newPassword
+     * @param session
+     * @return
+     */
+    Optional<AdminRespondToAuthChallengeResult> respondToAuthChallenge(
+            String username, String newPassword, String session);
 }

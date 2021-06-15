@@ -1,17 +1,21 @@
 package com.authorization.sample.awscognitospringauthserver.service.impl;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
+import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
 import com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException;
 import com.authorization.sample.awscognitospringauthserver.service.CognitoUserService;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
 import com.authorization.sample.awscognitospringauthserver.service.dto.AuthenticatedChallengeDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
 import com.authorization.sample.awscognitospringauthserver.web.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import java.time.LocalDateTime;
 
 import static com.amazonaws.services.cognitoidp.model.ChallengeNameType.NEW_PASSWORD_REQUIRED;
 
@@ -44,5 +48,19 @@ public class UserServiceImpl implements UserService {
                 .refreshToken(result.getAuthenticationResult().getRefreshToken())
                 .username(userLogin.getUsername())
                 .build(), "Login successful", true);
+    }
+
+    @Override
+    public AuthenticatedResponse updateUserPassword(UserPasswordUpdateDTO userPassword) {
+
+        AdminRespondToAuthChallengeResult result =
+                cognitoUserService.respondToAuthChallenge(userPassword.getUsername(), userPassword.getPassword(), userPassword.getSessionId()).get();
+
+        return AuthenticatedResponse.builder()
+                .accessToken(result.getAuthenticationResult().getAccessToken())
+                .idToken(result.getAuthenticationResult().getIdToken())
+                .refreshToken(result.getAuthenticationResult().getRefreshToken())
+                .username(userPassword.getUsername())
+                .build();
     }
 }

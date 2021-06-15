@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @PasswordValueMatch.List({
         @PasswordValueMatch(
                 field = "password",
-                fieldMatch = "confirmPassword",
+                fieldMatch = "passwordConfirm",
                 message = "Passwords do not match!"
         )
 })
@@ -21,10 +21,6 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class UserPasswordUpdateDTO extends AuthenticatedChallengeDTO {
-
-    @NonNull
-    @NotBlank(message = "username is mandatory")
-    private String username;
 
     @ValidPassword
     @NonNull
