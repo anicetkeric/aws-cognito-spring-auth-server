@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 
 import static com.amazonaws.services.cognitoidp.model.ChallengeNameType.NEW_PASSWORD_REQUIRED;
 
@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService {
     private final CognitoUserService cognitoUserService;
 
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public BaseResponse authenticate(LoginDTO userLogin) {
 
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService {
                             .challengeType(NEW_PASSWORD_REQUIRED.name())
                             .sessionId(result.getSession())
                             .username(userLogin.getUsername())
-                            .build(), "First TimeLogin - Password change required", true);
+                            .build(), "First time login - Password change required", false);
         }
 
         return new BaseResponse(AuthenticatedResponse.builder()
@@ -47,9 +50,12 @@ public class UserServiceImpl implements UserService {
                 .idToken(result.getAuthenticationResult().getIdToken())
                 .refreshToken(result.getAuthenticationResult().getRefreshToken())
                 .username(userLogin.getUsername())
-                .build(), "Login successful", true);
+                .build(), "Login successful", false);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public AuthenticatedResponse updateUserPassword(UserPasswordUpdateDTO userPassword) {
 
@@ -62,5 +68,13 @@ public class UserServiceImpl implements UserService {
                 .refreshToken(result.getAuthenticationResult().getRefreshToken())
                 .username(userPassword.getUsername())
                 .build();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void logout(@NotNull String accessToken) {
+       cognitoUserService.signOut(accessToken);
     }
 }

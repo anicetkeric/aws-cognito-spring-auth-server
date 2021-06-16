@@ -2,6 +2,7 @@ package com.authorization.sample.awscognitospringauthserver.service;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
+import com.amazonaws.services.cognitoidp.model.GlobalSignOutResult;
 
 import java.util.Optional;
 
@@ -17,11 +18,19 @@ public interface CognitoUserService {
 
 
     /**
-     * @param username
-     * @param newPassword
-     * @param session
-     * @return
+     * @param username username
+     * @param newPassword new user password
+     * @param session user session di
+     * @return Optional AdminRespondToAuthChallengeResult
      */
     Optional<AdminRespondToAuthChallengeResult> respondToAuthChallenge(
             String username, String newPassword, String session);
+
+
+    /**
+     * Signs out users from all devices.
+     * @param accessToken access token
+     * @return GlobalSignOutResult
+     */
+    GlobalSignOutResult signOut(String accessToken);
 }

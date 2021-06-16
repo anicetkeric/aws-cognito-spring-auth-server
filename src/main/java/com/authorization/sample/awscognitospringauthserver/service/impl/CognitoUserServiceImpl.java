@@ -30,7 +30,9 @@ public class CognitoUserServiceImpl implements CognitoUserService {
 
     private final AwsConfig awsConfig;
 
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<AdminInitiateAuthResult> initiateAuth(String username, String password) {
 
@@ -48,7 +50,9 @@ public class CognitoUserServiceImpl implements CognitoUserService {
 
         return adminInitiateAuthResult(authRequest);
     }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<AdminRespondToAuthChallengeResult> respondToAuthChallenge(
             String username, String newPassword, String session) {
@@ -72,7 +76,17 @@ public class CognitoUserServiceImpl implements CognitoUserService {
             throw new com.authorization.sample.awscognitospringauthserver.exception.InvalidPasswordException("Invalid password.", e);
         }
     }
-
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public GlobalSignOutResult signOut(String accessToken) {
+        try {
+            return awsCognitoIdentityProvider.globalSignOut(new GlobalSignOutRequest().withAccessToken(accessToken));
+        } catch (NotAuthorizedException e) {
+            throw new FailedAuthenticationException(String.format("Logout failed: %s", e.getErrorMessage()), e);
+        }
+    }
 
     private Optional<AdminInitiateAuthResult> adminInitiateAuthResult(AdminInitiateAuthRequest request) {
         try {

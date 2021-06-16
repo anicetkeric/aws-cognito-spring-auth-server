@@ -5,6 +5,8 @@ import com.authorization.sample.awscognitospringauthserver.service.dto.UserPassw
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
 import com.authorization.sample.awscognitospringauthserver.web.response.BaseResponse;
 
+import javax.validation.constraints.NotNull;
+
 
 public interface UserService {
 
@@ -20,4 +22,10 @@ public interface UserService {
      * @return AuthenticatedResponse
      */
     AuthenticatedResponse updateUserPassword(UserPasswordUpdateDTO userPasswordUpdateDTO);
+
+
+    /**
+     * @param accessToken user authenticate access token
+     */
+    void logout(@NotNull String accessToken);
 }
