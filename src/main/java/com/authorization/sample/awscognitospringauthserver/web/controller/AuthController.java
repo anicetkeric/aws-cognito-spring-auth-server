@@ -29,7 +29,20 @@ public class AuthController {
 	public ResponseEntity<BaseResponse> changePassword(@RequestBody @Validated UserPasswordUpdateDTO userPasswordUpdateDTO) {
 		AuthenticatedResponse authenticatedResponse = userService.updateUserPassword(userPasswordUpdateDTO);
 
-		return new ResponseEntity<>(new BaseResponse(authenticatedResponse, "Update successfully", true),HttpStatus.OK);
+		return new ResponseEntity<>(new BaseResponse(authenticatedResponse, "Update successfully", false),HttpStatus.OK);
+	}
+
+	@DeleteMapping("/logout")
+	public ResponseEntity<BaseResponse>  logout(@RequestHeader("Authorization") String bearerToken) {
+		if(bearerToken != null && bearerToken.contains("Bearer "))
+		{
+			String accessToken = bearerToken.replace("Bearer ", "");
+
+			userService.logout(accessToken);
+
+			return new ResponseEntity<>(new BaseResponse(null, "Logout successfully", false),HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new BaseResponse(null, "Header not correct"),HttpStatus.BAD_REQUEST);
 	}
 
 }
