@@ -2,6 +2,7 @@ package com.authorization.sample.awscognitospringauthserver.service.impl;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
+import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException;
 import com.authorization.sample.awscognitospringauthserver.service.CognitoUserService;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
@@ -76,5 +77,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(@NotNull String accessToken) {
        cognitoUserService.signOut(accessToken);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public ForgotPasswordResult userForgotPassword(String username) {
+        return cognitoUserService.forgotPassword(username);
     }
 }

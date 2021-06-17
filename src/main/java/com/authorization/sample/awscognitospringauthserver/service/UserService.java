@@ -1,5 +1,6 @@
 package com.authorization.sample.awscognitospringauthserver.service;
 
+import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
@@ -28,4 +29,11 @@ public interface UserService {
      * @param accessToken user authenticate access token
      */
     void logout(@NotNull String accessToken);
+
+
+    /**
+     * @param username username
+     * @return @{@link ForgotPasswordResult}
+     */
+    ForgotPasswordResult userForgotPassword(String username);
 }

@@ -1,5 +1,6 @@
 package com.authorization.sample.awscognitospringauthserver.web.controller;
 
+import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
@@ -10,7 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 @RestController
+@Validated
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -43,6 +51,14 @@ public class AuthController {
 			return new ResponseEntity<>(new BaseResponse(null, "Logout successfully", false),HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new BaseResponse(null, "Header not correct"),HttpStatus.BAD_REQUEST);
+	}
+
+	@GetMapping(value = "/forget-password")
+	public ResponseEntity<BaseResponse> forgotPassword(@NotNull @NotEmpty @Email @RequestParam("email") String email) {
+		ForgotPasswordResult result = userService.userForgotPassword(email);
+		return new ResponseEntity<>(new BaseResponse(
+				result.getCodeDeliveryDetails().getDestination(),
+				"You should soon receive an email which will allow you to reset your password. Check your spam and trash if you can't find the email.", false) ,HttpStatus.OK);
 	}
 
 }

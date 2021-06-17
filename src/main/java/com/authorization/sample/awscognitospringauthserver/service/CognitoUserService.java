@@ -2,6 +2,7 @@ package com.authorization.sample.awscognitospringauthserver.service;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
+import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.amazonaws.services.cognitoidp.model.GlobalSignOutResult;
 
 import java.util.Optional;
@@ -33,4 +34,11 @@ public interface CognitoUserService {
      * @return GlobalSignOutResult
      */
     GlobalSignOutResult signOut(String accessToken);
+
+    /**
+     * Send forgot password flow
+     * @param username username
+     * @return @{@link ForgotPasswordResult}
+     */
+    ForgotPasswordResult forgotPassword(String username);
 }
