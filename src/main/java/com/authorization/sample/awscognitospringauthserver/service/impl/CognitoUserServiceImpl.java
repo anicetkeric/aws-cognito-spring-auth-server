@@ -88,13 +88,31 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public ForgotPasswordResult forgotPassword(String username) {
+        try {
+            ForgotPasswordRequest request = new ForgotPasswordRequest();
+            request.withClientId(awsConfig.getCognito().getAppClientId())
+                    .withUsername(username)
+                    .withSecretHash(calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(),username));
+
+           return awsCognitoIdentityProvider.forgotPassword(request);
+
+        } catch (NotAuthorizedException e) {
+            throw new FailedAuthenticationException(String.format("Forgot password failed: %s", e.getErrorMessage()), e);
+        }
+    }
+
     private Optional<AdminInitiateAuthResult> adminInitiateAuthResult(AdminInitiateAuthRequest request) {
         try {
             return Optional.of(awsCognitoIdentityProvider.adminInitiateAuth(request));
         } catch (NotAuthorizedException e) {
             throw new FailedAuthenticationException(String.format("Authenticate failed: %s", e.getErrorMessage()), e);
         } catch (UserNotFoundException e) {
-            String username = request.getAuthParameters().get("USERNAME");
+            String username = request.getAuthParameters().get(CognitoAttributesEnum.USERNAME.name());
             throw new com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException(String.format("Username %s  not found.", username), e);
         }
     }
