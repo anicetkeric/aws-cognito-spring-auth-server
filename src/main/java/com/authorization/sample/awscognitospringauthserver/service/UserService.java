@@ -33,7 +33,7 @@ public interface UserService {
 
     /**
      * @param username username
-     * @return @{@link ForgotPasswordResult}
+     * @return {@link ForgotPasswordResult}
      */
     ForgotPasswordResult userForgotPassword(String username);
 }

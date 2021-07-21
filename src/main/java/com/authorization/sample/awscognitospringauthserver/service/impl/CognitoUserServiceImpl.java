@@ -31,7 +31,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     private final AwsConfig awsConfig;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Optional<AdminInitiateAuthResult> initiateAuth(String username, String password) {
@@ -51,7 +51,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         return adminInitiateAuthResult(authRequest);
     }
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Optional<AdminRespondToAuthChallengeResult> respondToAuthChallenge(
@@ -77,7 +77,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         }
     }
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public GlobalSignOutResult signOut(String accessToken) {
@@ -89,7 +89,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public ForgotPasswordResult forgotPassword(String username) {

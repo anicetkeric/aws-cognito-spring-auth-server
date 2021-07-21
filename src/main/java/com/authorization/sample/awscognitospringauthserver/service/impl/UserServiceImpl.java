@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public BaseResponse authenticate(LoginDTO userLogin) {
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public AuthenticatedResponse updateUserPassword(UserPasswordUpdateDTO userPassword) {
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void logout(@NotNull String accessToken) {
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public ForgotPasswordResult userForgotPassword(String username) {

@@ -15,6 +15,7 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
+        <aws.java.sdk.cognitoidp.version>1.12.28</aws.java.sdk.cognitoidp.version>
     </properties>
 
 
@@ -33,7 +34,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-cognitoidp</artifactId>
-            <version>1.12.5</version>
+            <version>${aws.java.sdk.cognitoidp.version}</version>
         </dependency>
 
         <dependency>

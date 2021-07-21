@@ -38,7 +38,7 @@ public interface CognitoUserService {
     /**
      * Send forgot password flow
      * @param username username
-     * @return @{@link ForgotPasswordResult}
+     * @return {@link ForgotPasswordResult}
      */
     ForgotPasswordResult forgotPassword(String username);
 }
