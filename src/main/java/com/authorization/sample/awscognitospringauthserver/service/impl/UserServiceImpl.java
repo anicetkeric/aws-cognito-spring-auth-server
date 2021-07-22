@@ -3,12 +3,14 @@ package com.authorization.sample.awscognitospringauthserver.service.impl;
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
 import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
+import com.amazonaws.services.cognitoidp.model.UserType;
 import com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException;
 import com.authorization.sample.awscognitospringauthserver.service.CognitoUserService;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
 import com.authorization.sample.awscognitospringauthserver.service.dto.AuthenticatedChallengeDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
 import com.authorization.sample.awscognitospringauthserver.web.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +87,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ForgotPasswordResult userForgotPassword(String username) {
         return cognitoUserService.forgotPassword(username);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserType createUser(UserSignUpDTO signUpDTO) {
+        return cognitoUserService.signUp(signUpDTO);
     }
 }
