@@ -7,8 +7,13 @@ import com.authorization.sample.awscognitospringauthserver.domain.enums.CognitoA
 import com.authorization.sample.awscognitospringauthserver.exception.FailedAuthenticationException;
 import com.authorization.sample.awscognitospringauthserver.exception.ServiceException;
 import com.authorization.sample.awscognitospringauthserver.service.CognitoUserService;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.passay.CharacterData;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -29,6 +34,89 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
     private final AwsConfig awsConfig;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserType signUp(UserSignUpDTO signUpDTO){
+
+        try {
+            final AdminCreateUserRequest signUpRequest = new AdminCreateUserRequest()
+                    .withUserPoolId(awsConfig.getCognito().getUserPoolId())
+                    // The user's temporary password.
+                    .withTemporaryPassword(generateValidPassword())
+                    // Specify "EMAIL" if email will be used to send the welcome message
+                    .withDesiredDeliveryMediums(DeliveryMediumType.EMAIL)
+                    .withUsername(signUpDTO.getEmail())
+                    .withMessageAction(MessageActionType.SUPPRESS)
+                    .withUserAttributes(
+                            new AttributeType().withName("name").withValue(signUpDTO.getName()),
+                            new AttributeType().withName("family_name").withValue(signUpDTO.getLastname()),
+                            new AttributeType().withName("custom:nationality").withValue(signUpDTO.getNationality()),
+                            new AttributeType().withName("email").withValue(signUpDTO.getEmail()),
+                            new AttributeType().withName("email_verified").withValue("true"),
+                            new AttributeType().withName("phone_number").withValue(signUpDTO.getPhoneNumber()),
+                            new AttributeType().withName("phone_number_verified").withValue("true"));
+
+            // create user
+            AdminCreateUserResult createUserResult =  awsCognitoIdentityProvider.adminCreateUser(signUpRequest);
+            log.info("Created User id: {}", createUserResult.getUser().getUsername());
+
+            // assign the roles
+            signUpDTO.getRoles().forEach(r -> addUserToGroup(signUpDTO.getEmail(), r));
+
+            // set permanent password
+            setUserPassword(signUpDTO.getEmail(), signUpDTO.getPassword());
+
+            return createUserResult.getUser();
+
+        } catch (com.amazonaws.services.cognitoidp.model.UsernameExistsException e) {
+            throw new UsernameExistsException("User name that already exists");
+        } catch (com.amazonaws.services.cognitoidp.model.InvalidPasswordException e) {
+            throw new com.authorization.sample.awscognitospringauthserver.exception.InvalidPasswordException("Invalid password.", e);
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+   public void addUserToGroup(String username, String groupName){
+
+        try {
+            // add user to group
+            AdminAddUserToGroupRequest addUserToGroupRequest = new AdminAddUserToGroupRequest()
+                    .withGroupName(groupName)
+                    .withUserPoolId(awsConfig.getCognito().getUserPoolId())
+                    .withUsername(username);
+
+            awsCognitoIdentityProvider.adminAddUserToGroup(addUserToGroupRequest);
+        } catch (com.amazonaws.services.cognitoidp.model.InvalidPasswordException e) {
+            throw new FailedAuthenticationException(String.format("Invalid parameter: %s", e.getErrorMessage()), e);
+        }
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AdminSetUserPasswordResult setUserPassword(String username, String password){
+
+        try {
+            // Sets the specified user's password in a user pool as an administrator. Works on any user.
+            AdminSetUserPasswordRequest adminSetUserPasswordRequest = new AdminSetUserPasswordRequest()
+                    .withUsername(username)
+                    .withPassword(password)
+                    .withUserPoolId(awsConfig.getCognito().getUserPoolId())
+                    .withPermanent(true);
+
+            return awsCognitoIdentityProvider.adminSetUserPassword(adminSetUserPasswordRequest);
+        } catch (com.amazonaws.services.cognitoidp.model.InvalidPasswordException e) {
+            throw new FailedAuthenticationException(String.format("Invalid parameter: %s", e.getErrorMessage()), e);
+        }
+    }
+
 
     /**
      * {@inheritDoc}
@@ -117,7 +205,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         }
     }
 
-    private String calculateSecretHash(String userPoolClientId, String userPoolClientSecret, String userName) throws RuntimeException {
+    private String calculateSecretHash(String userPoolClientId, String userPoolClientSecret, String userName) {
         final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 
         SecretKeySpec signingKey = new SecretKeySpec(
@@ -134,5 +222,38 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         }
     }
 
+
+    /**
+     * @return password generated
+     */
+    private String generateValidPassword() {
+        PasswordGenerator gen = new PasswordGenerator();
+        CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
+        CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
+        lowerCaseRule.setNumberOfCharacters(2);
+
+        CharacterData upperCaseChars = EnglishCharacterData.UpperCase;
+        CharacterRule upperCaseRule = new CharacterRule(upperCaseChars);
+        upperCaseRule.setNumberOfCharacters(2);
+
+        CharacterData digitChars = EnglishCharacterData.Digit;
+        CharacterRule digitRule = new CharacterRule(digitChars);
+        digitRule.setNumberOfCharacters(2);
+
+        CharacterData specialChars = new CharacterData() {
+            public String getErrorCode() {
+                return "ERRONEOUS_SPECIAL_CHARS";
+            }
+
+            public String getCharacters() {
+                return "!@#$%^&*()_+";
+            }
+        };
+        CharacterRule splCharRule = new CharacterRule(specialChars);
+        splCharRule.setNumberOfCharacters(2);
+
+        return gen.generatePassword(10, splCharRule, lowerCaseRule,
+                upperCaseRule, digitRule);
+    }
 
 }

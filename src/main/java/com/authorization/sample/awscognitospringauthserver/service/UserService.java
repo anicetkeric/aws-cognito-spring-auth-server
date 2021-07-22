@@ -1,8 +1,10 @@
 package com.authorization.sample.awscognitospringauthserver.service;
 
 import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
+import com.amazonaws.services.cognitoidp.model.UserType;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
 import com.authorization.sample.awscognitospringauthserver.web.response.BaseResponse;
 
@@ -36,4 +38,11 @@ public interface UserService {
      * @return {@link ForgotPasswordResult}
      */
     ForgotPasswordResult userForgotPassword(String username);
+
+    /**
+     * Creates a new user in the specified user pool.
+     * @param signUpDTO user info
+     * @return UserType
+     */
+    UserType createUser(UserSignUpDTO signUpDTO);
 }

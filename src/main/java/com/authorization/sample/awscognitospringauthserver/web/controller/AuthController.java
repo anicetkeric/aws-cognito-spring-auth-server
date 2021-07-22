@@ -1,9 +1,11 @@
 package com.authorization.sample.awscognitospringauthserver.web.controller;
 
 import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
+import com.amazonaws.services.cognitoidp.model.UserType;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserPasswordUpdateDTO;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 import com.authorization.sample.awscognitospringauthserver.web.response.AuthenticatedResponse;
 import com.authorization.sample.awscognitospringauthserver.web.response.BaseResponse;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,16 @@ public class AuthController {
 	public AuthController(UserService userService) {
 		this.userService = userService;
 	}
+
+	@PostMapping(value = "/sign-up")
+	public ResponseEntity<BaseResponse> signUp(@RequestBody @Validated UserSignUpDTO signUpDTO ) {
+		UserType result = userService.createUser(signUpDTO);
+		return new ResponseEntity<>(new BaseResponse(
+				result,
+				"User account created successfully", false) ,HttpStatus.CREATED);
+	}
+
+
 
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponse> login(@RequestBody @Validated LoginDTO loginRequest) {

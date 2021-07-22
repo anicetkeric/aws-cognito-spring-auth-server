@@ -1,9 +1,7 @@
 package com.authorization.sample.awscognitospringauthserver.service;
 
-import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
-import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
-import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
-import com.amazonaws.services.cognitoidp.model.GlobalSignOutResult;
+import com.amazonaws.services.cognitoidp.model.*;
+import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 
 import java.util.Optional;
 
@@ -41,4 +39,28 @@ public interface CognitoUserService {
      * @return {@link ForgotPasswordResult}
      */
     ForgotPasswordResult forgotPassword(String username);
+
+
+    /**
+     * Add a group to user
+     * @param username user name
+     * @param groupName group name
+     */
+    void addUserToGroup(String username, String groupName);
+
+
+    /**
+     *  set permanent password to make user status as CONFIRMED
+     * @param username username
+     * @param password user password
+     * @return AdminSetUserPasswordResult
+     */
+    AdminSetUserPasswordResult setUserPassword(String username, String password);
+
+    /**
+     * Creates a new user in the specified user pool.
+     * @param signUpDTO user info
+     * @return UserType
+     */
+    UserType signUp(UserSignUpDTO signUpDTO);
 }
