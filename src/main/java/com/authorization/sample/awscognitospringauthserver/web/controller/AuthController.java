@@ -1,5 +1,6 @@
 package com.authorization.sample.awscognitospringauthserver.web.controller;
 
+import com.amazonaws.services.cognitoidp.model.AdminListUserAuthEventsResult;
 import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
@@ -36,8 +37,6 @@ public class AuthController {
 				"User account created successfully", false) ,HttpStatus.CREATED);
 	}
 
-
-
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponse> login(@RequestBody @Validated LoginDTO loginRequest) {
 		return new ResponseEntity<>(userService.authenticate(loginRequest),HttpStatus.OK);
@@ -69,6 +68,18 @@ public class AuthController {
 		return new ResponseEntity<>(new BaseResponse(
 				result.getCodeDeliveryDetails().getDestination(),
 				"You should soon receive an email which will allow you to reset your password. Check your spam and trash if you can't find the email.", false) ,HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/user-events")
+	public ResponseEntity<BaseResponse> getUserAuthEvents(
+			@RequestParam(value = "username") String username,
+			@RequestParam(value = "maxResult", defaultValue = "0") int maxResult,
+			@RequestParam(value = "nextToken", required = false) String nextToken){
+
+		AdminListUserAuthEventsResult result = userService.userAuthEvents(username, maxResult, nextToken);
+		return new ResponseEntity<>(new BaseResponse(
+				result,"user data", false) ,HttpStatus.OK);
+
 	}
 
 }
