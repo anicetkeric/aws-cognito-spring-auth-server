@@ -10,6 +10,7 @@ import com.authorization.sample.awscognitospringauthserver.service.CognitoUserSe
 import com.authorization.sample.awscognitospringauthserver.service.dto.UserSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
@@ -34,6 +35,8 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
     private final AwsConfig awsConfig;
+
+
 
     /**
      * {@inheritDoc}
@@ -164,6 +167,30 @@ public class CognitoUserServiceImpl implements CognitoUserService {
             throw new com.authorization.sample.awscognitospringauthserver.exception.InvalidPasswordException("Invalid password.", e);
         }
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AdminListUserAuthEventsResult getUserAuthEvents(String username, int maxResult, String nextToken) {
+        try {
+
+            AdminListUserAuthEventsRequest userAuthEventsRequest = new AdminListUserAuthEventsRequest();
+            userAuthEventsRequest.setUsername(username);
+            userAuthEventsRequest.setUserPoolId(awsConfig.getCognito().getUserPoolId());
+            userAuthEventsRequest.setMaxResults(maxResult);
+            if(Strings.isNotBlank(nextToken)){
+                userAuthEventsRequest.setNextToken(nextToken);
+            }
+
+            return awsCognitoIdentityProvider.adminListUserAuthEvents(userAuthEventsRequest);
+        } catch (InternalErrorException e) {
+            throw new InternalErrorException(e.getErrorMessage());
+        } catch (InvalidParameterException | UserPoolAddOnNotEnabledException e) {
+            throw new com.authorization.sample.awscognitospringauthserver.exception.InvalidParameterException(String.format("Amazon Cognito service encounters an invalid parameter %s", e.getErrorMessage()), e);
+        }
+    }
+
+
     /**
      * {@inheritDoc}
      */

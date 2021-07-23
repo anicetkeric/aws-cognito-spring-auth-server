@@ -1,9 +1,6 @@
 package com.authorization.sample.awscognitospringauthserver.service.impl;
 
-import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
-import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeResult;
-import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
-import com.amazonaws.services.cognitoidp.model.UserType;
+import com.amazonaws.services.cognitoidp.model.*;
 import com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException;
 import com.authorization.sample.awscognitospringauthserver.service.CognitoUserService;
 import com.authorization.sample.awscognitospringauthserver.service.UserService;
@@ -94,5 +91,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserType createUser(UserSignUpDTO signUpDTO) {
         return cognitoUserService.signUp(signUpDTO);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AdminListUserAuthEventsResult userAuthEvents(String username, int maxResult, String nextToken) {
+        return cognitoUserService.getUserAuthEvents(username, maxResult, nextToken);
     }
 }

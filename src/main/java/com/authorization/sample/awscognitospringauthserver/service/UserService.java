@@ -1,5 +1,6 @@
 package com.authorization.sample.awscognitospringauthserver.service;
 
+import com.amazonaws.services.cognitoidp.model.AdminListUserAuthEventsResult;
 import com.amazonaws.services.cognitoidp.model.ForgotPasswordResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
 import com.authorization.sample.awscognitospringauthserver.service.dto.LoginDTO;
@@ -45,4 +46,12 @@ public interface UserService {
      * @return UserType
      */
     UserType createUser(UserSignUpDTO signUpDTO);
+
+    /**
+     * @param username username username
+     * @param maxResult The maximum number of authentication events to return.
+     * @param nextToken A pagination token.
+     * @return AdminListUserAuthEventsResult
+     */
+    AdminListUserAuthEventsResult userAuthEvents(String username, int maxResult, String nextToken);
 }

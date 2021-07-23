@@ -63,4 +63,13 @@ public interface CognitoUserService {
      * @return UserType
      */
     UserType signUp(UserSignUpDTO signUpDTO);
+
+
+    /**
+     * @param username username username
+     * @param maxResult The maximum number of authentication events to return.
+     * @param nextToken A pagination token.
+     * @return AdminListUserAuthEventsResult
+     */
+    AdminListUserAuthEventsResult getUserAuthEvents(String username, int maxResult, String nextToken);
 }
