@@ -21,7 +21,7 @@ public class BaseResponse {
     private String message;
     private boolean error = true;
 
-    public BaseResponse(Object data, String message){
+    public BaseResponse(Object data, String message) {
         this.data = data;
         this.message = message;
     }

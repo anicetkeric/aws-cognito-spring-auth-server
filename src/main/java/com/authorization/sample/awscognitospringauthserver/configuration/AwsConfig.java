@@ -17,23 +17,23 @@ import org.springframework.stereotype.Component;
 public class AwsConfig {
 
     /**
-     *  Aws access key ID
+     * Aws access key ID
      */
     private String accessKey;
 
 
     /**
-     *  Aws secret access key
+     * Aws secret access key
      */
     private String secretKey;
 
     /**
-     *  Aws region
+     * Aws region
      */
     private String region;
 
     /**
-     *  Aws Cognito client properties
+     * Aws Cognito client properties
      */
     private final Cognito cognito = new Cognito();
 

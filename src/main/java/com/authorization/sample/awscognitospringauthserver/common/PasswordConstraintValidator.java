@@ -56,7 +56,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
                 new WhitespaceRule(),
 
                 // rejects passwords that contain a sequence of >= 5 characters alphabetical  (e.g. abcdef)
-                 new IllegalSequenceRule(EnglishSequenceData.Alphabetical, 5, false),
+                new IllegalSequenceRule(EnglishSequenceData.Alphabetical, 5, false),
                 // rejects passwords that contain a sequence of >= 5 characters numerical   (e.g. 12345)
                 new IllegalSequenceRule(EnglishSequenceData.Numerical, 5, false)
         ));

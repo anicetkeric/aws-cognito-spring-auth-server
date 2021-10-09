@@ -38,6 +38,7 @@ public class BaseExceptionHandler {
 
         return new BaseResponse(errors, "Validation failed");
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ConstraintViolationException.class, UsernameExistsException.class, InvalidParameterException.class})
     public BaseResponse processValidationError(ConstraintViolationException ex) {

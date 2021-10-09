@@ -2,7 +2,7 @@ package com.authorization.sample.awscognitospringauthserver.exception;
 
 @SuppressWarnings("serial")
 public class ServiceException extends RuntimeException {
-    
+
     public ServiceException() {
         super();
     }
