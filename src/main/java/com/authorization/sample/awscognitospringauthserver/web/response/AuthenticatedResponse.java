@@ -9,12 +9,12 @@ import java.io.Serializable;
 @Builder
 public class AuthenticatedResponse implements Serializable {
 
-	private String username;
+    private String username;
 
-	private String accessToken;
+    private String accessToken;
 
-	private String idToken;
+    private String idToken;
 
-	private String refreshToken;
+    private String refreshToken;
 
 }

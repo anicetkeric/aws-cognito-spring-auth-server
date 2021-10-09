@@ -33,16 +33,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResponse authenticate(LoginDTO userLogin) {
 
-        AdminInitiateAuthResult result =  cognitoUserService.initiateAuth(userLogin.getUsername(), userLogin.getPassword())
-                                                             .orElseThrow(() -> new UserNotFoundException(String.format("Username %s  not found.", userLogin.getUsername())));
+        AdminInitiateAuthResult result = cognitoUserService.initiateAuth(userLogin.getUsername(), userLogin.getPassword())
+                .orElseThrow(() -> new UserNotFoundException(String.format("Username %s  not found.", userLogin.getUsername())));
 
         // Password change required on first login
         if (ObjectUtils.nullSafeEquals(NEW_PASSWORD_REQUIRED.name(), result.getChallengeName())) {
             return new BaseResponse(AuthenticatedChallengeDTO.builder()
-                            .challengeType(NEW_PASSWORD_REQUIRED.name())
-                            .sessionId(result.getSession())
-                            .username(userLogin.getUsername())
-                            .build(), "First time login - Password change required", false);
+                    .challengeType(NEW_PASSWORD_REQUIRED.name())
+                    .sessionId(result.getSession())
+                    .username(userLogin.getUsername())
+                    .build(), "First time login - Password change required", false);
         }
 
         return new BaseResponse(AuthenticatedResponse.builder()
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void logout(@NotNull String accessToken) {
-       cognitoUserService.signOut(accessToken);
+        cognitoUserService.signOut(accessToken);
     }
 
     /**
@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
     public ForgotPasswordResult userForgotPassword(String username) {
         return cognitoUserService.forgotPassword(username);
     }
+
     /**
      * {@inheritDoc}
      */

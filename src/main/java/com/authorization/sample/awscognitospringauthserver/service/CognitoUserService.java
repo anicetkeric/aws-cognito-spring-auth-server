@@ -9,6 +9,7 @@ public interface CognitoUserService {
 
     /**
      * Authenticate Cognito User
+     *
      * @param username user name
      * @param password user password
      * @return Optional<AdminInitiateAuthResult>
@@ -17,9 +18,9 @@ public interface CognitoUserService {
 
 
     /**
-     * @param username username
+     * @param username    username
      * @param newPassword new user password
-     * @param session user session di
+     * @param session     user session di
      * @return Optional AdminRespondToAuthChallengeResult
      */
     Optional<AdminRespondToAuthChallengeResult> respondToAuthChallenge(
@@ -28,6 +29,7 @@ public interface CognitoUserService {
 
     /**
      * Signs out users from all devices.
+     *
      * @param accessToken access token
      * @return GlobalSignOutResult
      */
@@ -35,6 +37,7 @@ public interface CognitoUserService {
 
     /**
      * Send forgot password flow
+     *
      * @param username username
      * @return {@link ForgotPasswordResult}
      */
@@ -43,14 +46,16 @@ public interface CognitoUserService {
 
     /**
      * Add a group to user
-     * @param username user name
+     *
+     * @param username  user name
      * @param groupName group name
      */
     void addUserToGroup(String username, String groupName);
 
 
     /**
-     *  set permanent password to make user status as CONFIRMED
+     * set permanent password to make user status as CONFIRMED
+     *
      * @param username username
      * @param password user password
      * @return AdminSetUserPasswordResult
@@ -59,6 +64,7 @@ public interface CognitoUserService {
 
     /**
      * Creates a new user in the specified user pool.
+     *
      * @param signUpDTO user info
      * @return UserType
      */
@@ -66,7 +72,7 @@ public interface CognitoUserService {
 
 
     /**
-     * @param username username username
+     * @param username  username username
      * @param maxResult The maximum number of authentication events to return.
      * @param nextToken A pagination token.
      * @return AdminListUserAuthEventsResult

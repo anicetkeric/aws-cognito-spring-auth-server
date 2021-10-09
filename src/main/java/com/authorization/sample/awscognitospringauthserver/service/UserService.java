@@ -42,13 +42,14 @@ public interface UserService {
 
     /**
      * Creates a new user in the specified user pool.
+     *
      * @param signUpDTO user info
      * @return UserType
      */
     UserType createUser(UserSignUpDTO signUpDTO);
 
     /**
-     * @param username username username
+     * @param username  username username
      * @param maxResult The maximum number of authentication events to return.
      * @param nextToken A pagination token.
      * @return AdminListUserAuthEventsResult

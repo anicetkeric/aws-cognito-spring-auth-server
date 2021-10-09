@@ -37,12 +37,11 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     private final AwsConfig awsConfig;
 
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public UserType signUp(UserSignUpDTO signUpDTO){
+    public UserType signUp(UserSignUpDTO signUpDTO) {
 
         try {
             final AdminCreateUserRequest signUpRequest = new AdminCreateUserRequest()
@@ -63,7 +62,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
                             new AttributeType().withName("phone_number_verified").withValue("true"));
 
             // create user
-            AdminCreateUserResult createUserResult =  awsCognitoIdentityProvider.adminCreateUser(signUpRequest);
+            AdminCreateUserResult createUserResult = awsCognitoIdentityProvider.adminCreateUser(signUpRequest);
             log.info("Created User id: {}", createUserResult.getUser().getUsername());
 
             // assign the roles
@@ -86,7 +85,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
      * {@inheritDoc}
      */
     @Override
-   public void addUserToGroup(String username, String groupName){
+    public void addUserToGroup(String username, String groupName) {
 
         try {
             // add user to group
@@ -100,11 +99,12 @@ public class CognitoUserServiceImpl implements CognitoUserService {
             throw new FailedAuthenticationException(String.format("Invalid parameter: %s", e.getErrorMessage()), e);
         }
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public AdminSetUserPasswordResult setUserPassword(String username, String password){
+    public AdminSetUserPasswordResult setUserPassword(String username, String password) {
 
         try {
             // Sets the specified user's password in a user pool as an administrator. Works on any user.
@@ -130,7 +130,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
         final Map<String, String> authParams = new HashMap<>();
         authParams.put(CognitoAttributesEnum.USERNAME.name(), username);
         authParams.put(CognitoAttributesEnum.PASSWORD.name(), password);
-        authParams.put(CognitoAttributesEnum.SECRET_HASH.name(), calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(),username));
+        authParams.put(CognitoAttributesEnum.SECRET_HASH.name(), calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(), username));
 
 
         final AdminInitiateAuthRequest authRequest = new AdminInitiateAuthRequest()
@@ -141,6 +141,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
 
         return adminInitiateAuthResult(authRequest);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -155,18 +156,19 @@ public class CognitoUserServiceImpl implements CognitoUserService {
                 .addChallengeResponsesEntry("userAttributes.name", "aek")
                 .addChallengeResponsesEntry(CognitoAttributesEnum.USERNAME.name(), username)
                 .addChallengeResponsesEntry(CognitoAttributesEnum.NEW_PASSWORD.name(), newPassword)
-                .addChallengeResponsesEntry(CognitoAttributesEnum.SECRET_HASH.name(), calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(),username));
+                .addChallengeResponsesEntry(CognitoAttributesEnum.SECRET_HASH.name(), calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(), username));
 
         try {
             return Optional.of(awsCognitoIdentityProvider.adminRespondToAuthChallenge(request));
         } catch (NotAuthorizedException e) {
-            throw new NotAuthorizedException("User not found."+ e.getErrorMessage());
+            throw new NotAuthorizedException("User not found." + e.getErrorMessage());
         } catch (UserNotFoundException e) {
             throw new com.authorization.sample.awscognitospringauthserver.exception.UserNotFoundException("User not found.", e);
         } catch (com.amazonaws.services.cognitoidp.model.InvalidPasswordException e) {
             throw new com.authorization.sample.awscognitospringauthserver.exception.InvalidPasswordException("Invalid password.", e);
         }
     }
+
     /**
      * {@inheritDoc}
      */
@@ -178,7 +180,7 @@ public class CognitoUserServiceImpl implements CognitoUserService {
             userAuthEventsRequest.setUsername(username);
             userAuthEventsRequest.setUserPoolId(awsConfig.getCognito().getUserPoolId());
             userAuthEventsRequest.setMaxResults(maxResult);
-            if(Strings.isNotBlank(nextToken)){
+            if (Strings.isNotBlank(nextToken)) {
                 userAuthEventsRequest.setNextToken(nextToken);
             }
 
@@ -212,9 +214,9 @@ public class CognitoUserServiceImpl implements CognitoUserService {
             ForgotPasswordRequest request = new ForgotPasswordRequest();
             request.withClientId(awsConfig.getCognito().getAppClientId())
                     .withUsername(username)
-                    .withSecretHash(calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(),username));
+                    .withSecretHash(calculateSecretHash(awsConfig.getCognito().getAppClientId(), awsConfig.getCognito().getAppClientSecret(), username));
 
-           return awsCognitoIdentityProvider.forgotPassword(request);
+            return awsCognitoIdentityProvider.forgotPassword(request);
 
         } catch (NotAuthorizedException e) {
             throw new FailedAuthenticationException(String.format("Forgot password failed: %s", e.getErrorMessage()), e);
